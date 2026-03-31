@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Todo Assistant{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Smart Todo Assistant</h1>
+            <nav class="nav">
+                <a href="{{ url_for('main.index') }}">Главная</a>
+                <a href="{{ url_for('auth.login') }}">Вход</a>
+                <a href="{{ url_for('auth.register') }}">Регистрация</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
