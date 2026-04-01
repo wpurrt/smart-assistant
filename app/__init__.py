@@ -8,7 +8,7 @@ from app.extensions import db, migrate, login_manager
 
 def create_up():
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_obgect(Config)
+    app.config.from_object(Config)
 
     #создаем папки
     os.makedirs(app.instance_path, exist_ok=True)
