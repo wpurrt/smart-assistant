@@ -19,6 +19,13 @@ def create_up():
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
+    from app.models import User
+
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
     #blueprints
     from app.main import main_bp
     from app.auth import auth_bp
