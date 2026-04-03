@@ -122,3 +122,52 @@ ne-height: 1.6;
     border-radius: 8px;
     font-size: 16px;
 }
+
+.form-input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.error-text {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: -6px;
+    margin-bottom: 6px;
+}
+
+.flash-wrapper {
+    margin-bottom: 20px;
+}
+
+.flash {
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.flash-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.flash-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.user-badge {
+    color: #ecf0f1;
+    margin-left: 20px;
+
+
+font-weight: bold;
+}

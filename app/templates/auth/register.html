@@ -6,17 +6,34 @@
 <section class="form-page">
     <h2>Регистрация</h2>
 
-    <form class="auth-form">
-        <label for="username">Имя пользователя</label>
-        <input type="text" id="username" placeholder="Введите логин">
+    <form class="auth-form" method="POST">
+        {{ form.hidden_tag() }}
 
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Введите email">
+        <label for="username">{{ form.username.label }}</label>
+        {{ form.username(class="form-input") }}
+        {% for error in form.username.errors %}
+            <small class="error-text">{{ error }}</small>
+        {% endfor %}
 
-        <label for="password">Пароль</label>
-        <input type="password" id="password" placeholder="Введите пароль">
+        <label for="email">{{ form.email.label }}</label>
+        {{ form.email(class="form-input") }}
+        {% for error in form.email.errors %}
+            <small class="error-text">{{ error }}</small>
+        {% endfor %}
 
-        <button type="submit" class="btn">Зарегистрироваться</button>
+        <label for="password">{{ form.password.label }}</label>
+        {{ form.password(class="form-input") }}
+        {% for error in form.password.errors %}
+            <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        <label for="confirm_password">{{ form.confirm_password.label }}</label>
+        {{ form.confirm_password(class="form-input") }}
+        {% for error in form.confirm_password.errors %}
+            <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        {{ form.submit(class="btn") }}
     </form>
 </section>
 {% endblock %}
