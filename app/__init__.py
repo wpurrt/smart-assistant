@@ -29,8 +29,10 @@ def create_up():
     #blueprints
     from app.main import main_bp
     from app.auth import auth_bp
+    from app.tasks import tasks_bp
 
     app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(tasks_bp, url_prefix="/tasks")
 
     return app

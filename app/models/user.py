@@ -19,6 +19,8 @@ class User(UserMixin, db.Model):
 
     is_active_user = db.Column(db.Boolean, default=True)
 
+    tasks = db.relationship("Task", backref='owner', lazy=True, cascade='all, delete-orphan')
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
