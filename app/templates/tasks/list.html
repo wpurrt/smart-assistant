@@ -39,7 +39,7 @@
             <div class="task-actions">
                 <form method="POST" action="{{ url_for('tasks.toggle_task', task_id=task.id) }}">
                     {{ form.csrf_token }}
-                    <button type="submit" class="btn btn-small">-s
+                    <button type="submit" class="btn btn-small">
                         {% if task.is_done %}Вернуть{% else %}Выполнено{% endif %}
                     </button>
                 </form>

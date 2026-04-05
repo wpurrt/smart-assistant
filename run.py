@@ -1,7 +1,7 @@
-from app import create_up
+from app import create_app
 
 
-app = create_up()
+app = create_app()
 
 
 if __name__ == "__main__":
