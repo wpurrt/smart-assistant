@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Мои задачи | Smart Todo Assistant{% endblock %}
+
+{% block content %}
+<section class="todo-page">
+    <h2>Мои задачи</h2>
+
+    <form class="auth-form" method="POST">
+        {{ form.hidden_tag() }}
+
+        <label for="title">{{ form.title.label }}</label>
+        {{ form.title(class="form-input") }}
+        {% for error in form.title.errors %}
+        <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        <label for="description">{{ form.description.label }}</label>
+        {{ form.description(class="form-input form-textarea") }}
+        {% for error in form.description.errors %}
+        <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        {{ form.submit(class="btn") }}
+    </form>
+
+    <div class="tasks-list">
+        {% if tasks %}
+        {% for task in tasks %}
+        <div class="task-card {% if task.is_done %}task-done{% endif %}">
+            <div class="task-content">
+                <h3>{{ task.title }}</h3>
+                {% if task.description %}
+                <p>{{ task.description }}</p>
+                {% endif %}
+                <small>Создано: {{ task.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+            </div>
+
+            <div class="task-actions">
+                <form method="POST" action="{{ url_for('tasks.toggle_task', task_id=task.id) }}">
+                    {{ form.csrf_token }}
+                    <button type="submit" class="btn btn-small">-s
+                        {% if task.is_done %}Вернуть{% else %}Выполнено{% endif %}
+                    </button>
+                </form>
+
+                <form method="POST" action="{{ url_for('tasks.delete_task', task_id=task.id) }}">
+                    {{ form.csrf_token }}
+                    <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="empty-text">У вас пока нет задач. Добавьте первую 👀</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

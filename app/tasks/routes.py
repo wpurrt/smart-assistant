@@ -1,18 +1,31 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 
-
 from app.extensions import db
+from app.forms import TaskForm
 from app.models import Task
 from app.tasks import tasks_bp
 
-
-@tasks_bp.route("/")
+@tasks_bp.route("/", methods=["GET", "POST"])
 @login_required
 def list_tasks():
-    tasks = Task.query.filter_by(user_id=current_user.id).order_by(Task.created_at.desc()).all()
-    return render_template("tasks/list.html", tasks=tasks)
+    form = TaskForm()
 
+    if form.validate_on_submit():
+        task = Task(
+            title=form.title.data,
+            description=form.description.data,
+            user_id=current_user.id
+        )
+
+        db.session.add(task)
+        db.session.commit()
+
+        flash("Задача успешно добавлена.", "success")
+        return redirect(url_for("tasks.list_tasks"))
+
+    tasks = Task.query.filter_by(user_id=current_user.id).order_by(Task.created_at.desc()).all()
+    return render_template("tasks/list.html", form=form, tasks=tasks)
 
 @tasks_bp.route("/toggle/<int:task_id>", methods=["POST"])
 @login_required

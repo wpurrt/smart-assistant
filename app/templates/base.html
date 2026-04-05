@@ -7,40 +7,45 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header class=
+<header class=
 
 
-eader">
-        <div class="container">
-            <h1 class="logo">Smart Todo Assistant</h1>
-            <nav class="nav">
-                <a href="{{ url_for('main.index') }}">Главная</a>
+                eader">
+    <div class="container">
+        <h1 class="logo">Smart Todo Assistant</h1>
+        <nav class="nav">
+            <a href="{{ url_for('main.index') }}">Главная</a>
 
-                {% if current_user.is_authenticated %}
-                    <span class="user-badge">Привет, {{ current_user.username }}!</span>
-                    <a href="{{ url_for('auth.logout') }}">Выход</a>
-                {% else %}
-                    <a href="{{ url_for('auth.login') }}">Вход</a>
-                    <a href="{{ url_for('auth.register') }}">Регистрация</a>
-                {% endif %}
-            </nav>
-        </div>
-    </header>
 
-    <main class="container main-content">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-wrapper">
-                    {% for category, message in messages %}
-                        <div class="flash flash-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('tasks.list_tasks') }}">Мои задачи</a>
             {% endif %}
-        {% endwith %}
 
-        {% block content %}{% endblock %}
-    </main>
+            {% if current_user.is_authenticated %}
+            <span class="user-badge">Привет, {{ current_user.username }}!</span>
+            <a href="{{ url_for('auth.logout') }}">Выход</a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}">Вход</a>
+            <a href="{{ url_for('auth.register') }}">Регистрация</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="container main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-wrapper">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
 </body>
 </html>
