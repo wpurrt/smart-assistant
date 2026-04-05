@@ -3,11 +3,13 @@ from datetime import datetime
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+
+
 from app.extensions import db
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
 
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -19,7 +21,26 @@ class User(UserMixin, db.Model):
 
     is_active_user = db.Column(db.Boolean, default=True)
 
-    tasks = db.relationship("Task", backref='owner', lazy=True, cascade='all, delete-orphan')
+    tasks = db.relationship(
+        "Task",
+        backref="owner",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    categories = db.relationship(
+        "Category",
+        backref="owner",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    alice_link = db.relationship(
+        "UserAliceLink",
+        backref="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

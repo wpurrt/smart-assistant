@@ -14,9 +14,14 @@ class Task(db.Model):
 
     is_done = db.Column(db.Boolean, default=False, nullable=False)
 
+    priority = db.Column(db.String(20), default="medium", nullable=False)  # low, medium, high
+    deadline = db.Column(db.DateTime, nullable=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)
 
     def __repr__(self):
         return f"<Task {self.title}>"

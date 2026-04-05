@@ -1,21 +1,28 @@
+from datetime import datetime
+
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from app.extensions import db
 from app.forms import TaskForm
-from app.models import Task
+from app.models import Task, Category
 from app.tasks import tasks_bp
+
 
 @tasks_bp.route("/", methods=["GET", "POST"])
 @login_required
 def list_tasks():
     form = TaskForm()
-
+    categories = Category.query.filter_by(user_id=current_user.id).order_by(Category.name.asc()).all()
+    form.category_id.choices = [(0, "Без категории")] + [(c.id, c.name) for c in categories]
     if form.validate_on_submit():
         task = Task(
             title=form.title.data,
             description=form.description.data,
-            user_id=current_user.id
+            priority=form.priority.data,
+            deadline=form.deadline.data,
+            user_id=current_user.id,
+            category_id=form.category_id.data if form.category_id.data != 0 else None
         )
 
         db.session.add(task)
@@ -27,16 +34,19 @@ def list_tasks():
     tasks = Task.query.filter_by(user_id=current_user.id).order_by(Task.created_at.desc()).all()
     return render_template("tasks/list.html", form=form, tasks=tasks)
 
+
 @tasks_bp.route("/toggle/<int:task_id>", methods=["POST"])
 @login_required
 def toggle_task(task_id):
     task = Task.query.filter_by(id=task_id, user_id=current_user.id).first_or_404()
 
     task.is_done = not task.is_done
+    task.completed_at = datetime.utcnow() if task.is_done else None
     db.session.commit()
 
     flash("Статус задачи обновлён.", "success")
     return redirect(url_for("tasks.list_tasks"))
+
 
 @tasks_bp.route("/delete/<int:task_id>", methods=["POST"])
 @login_required

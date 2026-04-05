@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, TextAreaField, SubmitField, SelectField, DateTimeLocalField
+from wtforms.validators import DataRequired, Length, Optional
+
 
 class TaskForm(FlaskForm):
     title = StringField(
@@ -18,4 +19,26 @@ class TaskForm(FlaskForm):
         ]
     )
 
-    submit = SubmitField("Добавить задачу")
+    priority = SelectField(
+        "Приоритет",
+        choices=[
+            ("low", "Низкий"),
+            ("medium", "Средний"),
+            ("high", "Высокий")
+        ],
+        default="medium"
+    )
+
+    category_id = SelectField(
+        "Категория",
+        coerce=int,
+        validators=[Optional()]
+    )
+
+    deadline = DateTimeLocalField(
+        "Дедлайн",
+        format="%Y-%m-%dT%H:%M",
+        validators=[Optional()]
+    )
+
+    submit = SubmitField("Сохранить задачу")

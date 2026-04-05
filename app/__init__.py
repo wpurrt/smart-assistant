@@ -30,9 +30,15 @@ def create_app():
     from app.main import main_bp
     from app.auth import auth_bp
     from app.tasks import tasks_bp
+    from app.categories import categories_bp
+    from app.profile import profile_bp
+    from app.alice import alice_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(tasks_bp, url_prefix="/tasks")
+    app.register_blueprint(categories_bp, url_prefix="/categories")
+    app.register_blueprint(profile_bp, url_prefix="/profile")
+    app.register_blueprint(alice_bp, url_prefix="/alice")
 
     return app
