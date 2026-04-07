@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Категории | Smart Todo Assistant{% endblock %}
+
+{% block content %}
+<section class="todo-page">
+    <h2>Мои категории</h2>
+
+    <form class="auth-form" method="POST">
+        {{ form.hidden_tag() }}
+
+        <label>{{ form.name.label }}</label>
+        {{ form.name(class="form-input") }}
+        {% for error in form.name.errors %}
+            <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        <label>{{ form.color.label }}</label>
+        {{ form.color(class="form-input") }}
+        {% for error in form.color.errors %}
+            <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        {{ form.submit(class="btn") }}
+    </form>
+
+    <div class="tasks-list">
+        {% if categories %}
+            {% for category in categories %}
+                <div class="task-card">
+                    <div class="task-content">
+                        <h3>{{ category.name }}</h3>
+                        <p>Цвет: <span style="font-weight:bold;">{{ category.color }}</span></p>
+                    </div>
+
+                    <div class="task-actions">
+                        <form method="POST" action="{{ url_for('categories.delete_category', category_id=category.id) }}">
+                            {{ form.csrf_token }}
+                            <button type="submit" class="btn btn-small btn-danger">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-text">Категорий пока нет.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
