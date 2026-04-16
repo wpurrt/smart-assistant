@@ -42,6 +42,13 @@ class User(UserMixin, db.Model):
         cascade="all, delete-orphan"
     )
 
+    action_logs = db.relationship(
+        "ActionLog",
+        backref="user",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

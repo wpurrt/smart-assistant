@@ -33,6 +33,7 @@ def create_app():
     from app.categories import categories_bp
     from app.profile import profile_bp
     from app.alice import alice_bp
+    from app.analytics import analytics_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -40,5 +41,6 @@ def create_app():
     app.register_blueprint(categories_bp, url_prefix="/categories")
     app.register_blueprint(profile_bp, url_prefix="/profile")
     app.register_blueprint(alice_bp, url_prefix="/alice")
+    app.register_blueprint(analytics_bp, url_prefix="/analytics")
 
     return app

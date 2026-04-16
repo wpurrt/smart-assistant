@@ -5,6 +5,7 @@ from flask import request, jsonify
 from app.alice import alice_bp
 from app.extensions import db
 from app.models import UserAliceLink, Task
+from app.services.task_service import log_user_action
 
 
 def build_response(text, end_session=False):
@@ -53,6 +54,12 @@ def webhook():
         task = Task(
             title=title,
             user_id=user_id
+        )
+        log_user_action(
+            user_id=user_id,
+            action_type="create",
+            entity_type="alice_task",
+            description=f"Алиса создала задачу: {task.title}"
         )
         db.session.add(task)
         db.session.commit()

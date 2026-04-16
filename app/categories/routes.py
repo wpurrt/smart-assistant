@@ -6,6 +6,7 @@ from app.categories import categories_bp
 from app.extensions import db
 from app.forms import CategoryForm
 from app.models import Category
+from app.services.task_service import log_user_action
 
 
 @categories_bp.route("/", methods=["GET", "POST"])
@@ -26,6 +27,12 @@ def list_categories():
             user_id=current_user.id
         )
         db.session.add(category)
+        log_user_action(
+            user_id=current_user.id,
+            action_type="create",
+            entity_type="category",
+            description=f"Создана категория: {category.name}"
+        )
         db.session.commit()
         flash("Категория успешно добавлена.", "success")
         return redirect(url_for("categories.list_categories"))
@@ -37,6 +44,13 @@ def list_categories():
 @login_required
 def delete_category(category_id):
     category = Category.query.filter_by(id=category_id, user_id=current_user.id).first_or_404()
+    category_name = category.name
+    log_user_action(
+        user_id=current_user.id,
+        action_type="delete",
+        entity_type="category",
+        description=f"Удалена категория: {category_name}"
+    )
     db.session.delete(category)
     db.session.commit()
     flash("Категория удалена.", "info")
