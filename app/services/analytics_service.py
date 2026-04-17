@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from app.models import Task, Category
 
 
@@ -66,4 +67,29 @@ def get_analytics_data(user):
         "completion_rate": completion_rate,
         "by_priority": by_priority,
         "by_category": by_category
+    }
+
+
+def get_user_analytics(user):
+    all_tasks = Task.query.filter_by(user_id=user.id).all()
+    completed_tasks = Task.query.filter_by(user_id=user.id, status='completed').all()
+    pending_tasks = Task.query.filter_by(user_id=user.id, status='pending').all()
+
+    week_ago = datetime.utcnow() - timedelta(days=7)
+    completed_this_week = Task.query.filter(
+        Task.user_id == user.id,
+        Task.status == 'completed',
+        Task.completed_at >= week_ago
+    ).count()
+
+    completion_rate = 0
+    if len(all_tasks) > 0:
+        completion_rate = round((len(completed_tasks) / len(all_tasks)) * 100, 2)
+
+    return {
+        'total_tasks': len(all_tasks),
+        'completed_tasks': len(completed_tasks),
+        'pending_tasks': len(pending_tasks),
+        'completed_this_week': completed_this_week,
+        'completion_rate': completion_rate
     }

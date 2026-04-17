@@ -1,7 +1,8 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
+from flask import Blueprint, render_template, flash, redirect, url_for
 
-
+from app.services.alice_service import ensure_alice_code
 from app.extensions import db
 from app.forms import GenerateAliceCodeForm
 from app.models import UserAliceLink
@@ -37,3 +38,23 @@ def profile_page():
         return redirect(url_for("profile.profile_page"))
 
     return render_template("profile/index.html", form=form)
+
+
+profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
+
+@profile_bp.route('/')
+@login_required
+def profile():
+    form = GenerateAliceCodeForm()
+    return render_template('profile/profile.html', form=form)
+
+@profile_bp.route('/generate-alice-code', methods=['POST'])
+@login_required
+def generate_alice_code():
+    form = GenerateAliceCodeForm()
+
+    if form.validate_on_submit():
+        ensure_alice_code(current_user)
+        flash('Код привязки Алисы обновлён.', 'success')
+
+    return redirect(url_for('profile.profile'))

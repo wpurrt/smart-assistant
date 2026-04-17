@@ -1,6 +1,17 @@
 from datetime import datetime
 
 from flask import request, jsonify
+from flask import Blueprint, request, jsonify
+from app.models import User
+from app.services.alice_service import (
+    detect_intent,
+    link_user_by_code,
+    create_task_from_command,
+    list_tasks_for_user,
+    complete_task_from_command,
+    get_next_important_task,
+    save_alice_log
+)
 
 from app.alice import alice_bp
 from app.extensions import db
@@ -88,3 +99,54 @@ def webhook():
 
         return jsonify(build_response("У вас нет активных задач."))
     return jsonify(build_response("Команда пока не поддерживается."))
+
+
+alice_bp = Blueprint('alice', __name__, url_prefix='/alice')
+
+@alice_bp.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.get_json(silent=True) or {}
+
+    command = data.get('request', {}).get('command', '')
+    session = data.get('session', {})
+    state = data.get('state', {})
+
+    response_text = 'Извините, я не поняла команду.'
+    intent = detect_intent(command)
+    user = None
+
+    alice_code = state.get('user', {}).get('alice_code')
+
+    if intent == 'link_account':
+        code = ''.join(filter(str.isalnum, command.upper()))
+        user = link_user_by_code(code)
+        if user:
+            response_text = 'Аккаунт успешно привязан. Теперь вы можете управлять задачами голосом.'
+        else:
+            response_text = 'Не удалось найти пользователя с таким кодом.'
+    else:
+        if alice_code:
+            user = User.query.filter_by(alice_code=alice_code, alice_linked=True).first()
+
+        if not user:
+            response_text = 'Сначала привяжите аккаунт через код в профиле сайта.'
+        else:
+            if intent == 'create_task':
+                response_text = create_task_from_command(user, command)
+            elif intent == 'list_tasks':
+                response_text = list_tasks_for_user(user)
+            elif intent == 'complete_task':
+                response_text = complete_task_from_command(user, command)
+            elif intent == 'next_task':
+                response_text = get_next_important_task(user)
+
+    save_alice_log(user, command, response_text, intent)
+
+    return jsonify({
+        'version': data.get('version', '1.0'),
+        'session': session,
+        'response': {
+            'text': response_text,
+            'end_session': False
+        }
+    })
