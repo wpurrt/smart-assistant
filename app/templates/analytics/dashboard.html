@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Аналитика задач</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Всего задач</h5>
+                <p>{{ stats.total_tasks }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Выполнено</h5>
+                <p>{{ stats.completed_tasks }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Активные</h5>
+                <p>{{ stats.pending_tasks }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>За неделю</h5>
+                <p>{{ stats.completed_this_week }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4 p-3">
+        <h5>Процент выполнения</h5>
+        <p>{{ stats.completion_rate }}%</p>
+    </div>
+</div>
+{% endblock %}

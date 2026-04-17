@@ -11,6 +11,12 @@
 <header class="header">
     <div class="container">
         <h1 class="logo">Smart Todo Assistant</h1>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('profile.profile') }}">Профиль</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('analytics.dashboard') }}">Аналитика</a>
+        </li>
         <nav class="nav">
             <a href="{{ url_for('main.index') }}">Главная</a>
 
