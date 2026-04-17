@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование задачи | Smart Todo Assistant{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <h2>Редактировать задачу</h2>
+
+    <form class="auth-form" method="POST">
+        {{ form.hidden_tag() }}
+
+        <label>{{ form.title.label }}</label>
+        {{ form.title(class="form-input") }}
+        {% for error in form.title.errors %}
+        <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        <label>{{ form.description.label }}</label>
+        {{ form.description(class="form-input form-textarea") }}
+        {% for error in form.description.errors %}
+        <small class="error-text">{{ error }}</small>
+        {% endfor %}
+
+        <label>{{ form.priority.label }}</label>
+        {{ form.priority(class="form-input") }}
+
+        <label>{{ form.category_id.label }}</label>
+        {{ form.category_id(class="form-input") }}
+
+        <label>{{ form.deadline.label }}</label>
+        {{ form.deadline(class="form-input") }}
+
+        {{ form.submit(class="btn") }}
+    </form>
+
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-secondary">Назад к задачам</a>
+    </div>
+</section>
+{% endblock %}

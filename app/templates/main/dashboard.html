@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Smart Todo Assistant{% endblock %}
+
+{% block content %}
+<section class="todo-page">
+    <h2>Личный кабинет</h2>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Всего задач</h3>
+            <p>{{ stats.total_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Выполнено</h3>
+            <p>{{ stats.completed_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Активные</h3>
+            <p>{{ stats.active_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Просроченные</h3>
+            <p>{{ stats.overdue_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Процент выполнения</h3>
+            <p>{{ stats.completion_rate }}%</p>
+        </div>
+    </div>
+
+    <div class="task-card">
+        <div class="task-content">
+            <h3>Ближайшая задача</h3>
+            {% if stats.nearest_task %}
+            <p><strong>{{ stats.nearest_task.title }}</strong></p>
+            {% if stats.nearest_task.deadline %}
+            <p>Дедлайн: {{ stats.nearest_task.deadline.strftime('%d.%m.%Y %H:%M') }}</p>
+            {% endif %}
+            {% else %}
+            <p>Нет ближайшей задачи с дедлайном.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="task-card">
+        <div class="task-content">
+            <h3>Последние действия</h3>
+            {% if recent_logs %}
+            <ul style="margin-top: 10px; padding-left: 20px;">
+                {% for log in recent_logs %}
+                <li>
+                    {{ log.description }} —
+                    <small>{{ log.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Пока нет действий.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

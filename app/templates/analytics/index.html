@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Аналитика | Smart Todo Assistant{% endblock %}
+
+{% block content %}
+<section class="todo-page">
+    <h2>Аналитика продуктивности</h2>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Всего задач</h3>
+            <p>{{ analytics.total_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Выполнено</h3>
+            <p>{{ analytics.completed_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Активные</h3>
+            <p>{{ analytics.active_tasks }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Процент выполнения</h3>
+            <p>{{ analytics.completion_rate }}%</p>
+        </div>
+    </div>
+
+    <div class="task-card">
+        <div class="task-content">
+            <h3>По приоритетам</h3>
+            <ul style="margin-top: 10px; padding-left: 20px;">
+                <li>Высокий: {{ analytics.by_priority.high }}</li>
+                <li>Средний: {{ analytics.by_priority.medium }}</li>
+                <li>Низкий: {{ analytics.by_priority.low }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="task-card">
+        <div class="task-content">
+            <h3>По категориям</h3>
+            {% if analytics.by_category %}
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    {% for item in analytics.by_category %}
+                        <li>
+                            {{ item.name }} — всего: {{ item.count }}, выполнено: {{ item.done }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Категорий и задач пока недостаточно для аналитики.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
