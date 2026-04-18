@@ -9,7 +9,7 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    color = db.Column(db.String(20), default="#3498db")
+    #color = db.Column(db.String(20), default="#3498db")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     tasks = db.relationship(

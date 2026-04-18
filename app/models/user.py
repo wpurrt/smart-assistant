@@ -1,11 +1,8 @@
 from datetime import datetime
-
-
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
-
 from app.extensions import db
+import uuid
 
 
 class User(UserMixin, db.Model):
@@ -17,6 +14,8 @@ class User(UserMixin, db.Model):
 
     password_hash = db.Column(db.String(225), nullable=False)
 
+    alice_link_code = db.Column(db.String(32), unique=True)
+    yandex_user_id = db.Column(db.String(128), unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     is_active_user = db.Column(db.Boolean, default=True)
@@ -54,6 +53,9 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_alice_code(self):
+        self.alice_link_code = f"ALICE-{uuid.uuid4().hex[:6].upper()}"
 
     def __repr__(self):
         return f"<User {self.username}>"
