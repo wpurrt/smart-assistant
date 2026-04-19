@@ -10,7 +10,7 @@ body {
     color: #222;
 
 
-ne-height: 1.6;
+line-height: 1.6;
 }
 
 .container {
@@ -226,6 +226,15 @@ font-weight: bold;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.task-overdue {
+    border-left: 6px solid #e74c3c;
+    background-color: #ffe6e6 !important;
+}
+
+.task-overdue h3 {
+    color: #c0392b;
 }
 
 .btn-small {

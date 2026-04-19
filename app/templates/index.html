@@ -4,16 +4,14 @@
 
 {% block content %}
 <section class="hero">
-    <h2>Умный список дел с поддержкой Алисы</h2>
-    <p>
-        Управляйте задачами через сайт и голосовые команды.
-        Создавайте задачи, отслеживайте дедлайны, прикрепляйте файлы
-        и получайте аналитику по выполнению.
-    </p>
-
-    <div class="hero-actions">
-        <a class="btn" href="{{ url_for('auth.register') }}">Начать</a>
-        <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Войти</a>
-    </div>
+    {% if current_user.is_authenticated %}
+        <h2>Здравствуйте, {{ current_user.username }}!</h2>
+        <p>Рады видеть Вас сегодня 🙂</p>
+    {% else %}
+        <h2>Умный список дел с поддержкой Алисы</h2>
+        <p>
+            Управляйте задачами через сайт и голосовые команды.
+        </p>
+    {% endif %}
 </section>
 {% endblock %}

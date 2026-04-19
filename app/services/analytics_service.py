@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from app.models import Task, Category
 
@@ -72,13 +72,13 @@ def get_analytics_data(user):
 
 def get_user_analytics(user):
     all_tasks = Task.query.filter_by(user_id=user.id).all()
-    completed_tasks = Task.query.filter_by(user_id=user.id, status='completed').all()
-    pending_tasks = Task.query.filter_by(user_id=user.id, status='pending').all()
+    completed_tasks = Task.query.filter_by(user_id=user.id, is_done=True).all()
+    pending_tasks = Task.query.filter_by(user_id=user.id, is_done=False).all()
 
     week_ago = datetime.utcnow() - timedelta(days=7)
     completed_this_week = Task.query.filter(
         Task.user_id == user.id,
-        Task.status == 'completed',
+        Task.is_done.is_(True),
         Task.completed_at >= week_ago
     ).count()
 

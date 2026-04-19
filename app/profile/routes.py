@@ -1,16 +1,18 @@
-from flask import Blueprint, render_template
+from flask import render_template
 from flask_login import login_required, current_user
-from app import db
+from app.profile.forms import GenerateAliceCodeForm
+from app.profile import profile_bp
+from app.extensions import db
 
 
-profile_bp = Blueprint("profile", __name__)
-
-
-@profile_bp.route("/")
+@profile_bp.route("/", methods=["GET", "POST"])
 @login_required
 def profile():
-    if not current_user.alice_link_code:
+    form = GenerateAliceCodeForm()
+
+    #нажали кнопку генерации кода
+    if form.validate_on_submit():
         current_user.generate_alice_code()
         db.session.commit()
 
-    return render_template("profile.html", user=current_user)
+    return render_template("profile/index.html", user=current_user, form=form)

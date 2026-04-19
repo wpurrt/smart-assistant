@@ -16,7 +16,7 @@
         {% endfor %}
 
         <label>{{ form.color.label }}</label>
-        {{ form.color(class="form-input") }}
+        <input type="color" name="color" value="#3498db" class="form-input">
         {% for error in form.color.errors %}
             <small class="error-text">{{ error }}</small>
         {% endfor %}
@@ -29,7 +29,7 @@
             {% for category in categories %}
                 <div class="task-card">
                     <div class="task-content">
-                        <h3>{{ category.name }}</h3>
+                        <h3 style="color: {{ category.color }}">{{ category.name }}</h3>
                         <p>Цвет: <span style="font-weight:bold;">{{ category.color }}</span></p>
                     </div>
 

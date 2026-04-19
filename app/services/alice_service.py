@@ -54,7 +54,7 @@ def handle_alice_command(data):
 
     #ближайшая задача
     if "ближайшая задача" in command:
-        task = Task.query.filter_by(user_id=user.id, is_done=False).order_by(Task.due_date).first()
+        task = Task.query.filter_by(user_id=user.id, is_done=False).order_by(Task.deadline.asc()).first()
         if not task:
             return "Нет задач"
         return f"Ближайшая задача: {task.title}"

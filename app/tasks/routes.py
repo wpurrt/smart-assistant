@@ -39,7 +39,7 @@ def list_tasks():
         return redirect(url_for("tasks.list_tasks"))
 
     tasks = Task.query.filter_by(user_id=current_user.id).order_by(Task.created_at.desc()).all()
-    return render_template("tasks/list.html", form=form, tasks=tasks)
+    return render_template("tasks/list.html", form=form, tasks=tasks, now=datetime.utcnow())
 
 
 @tasks_bp.route("/edit/<int:task_id>", methods=["GET", "POST"])

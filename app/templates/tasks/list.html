@@ -36,9 +36,17 @@
     <div class="tasks-list">
         {% if tasks %}
         {% for task in tasks %}
-        <div class="task-card {% if task.is_done %}task-done{% endif %}">
+        <div class="task-card
+             {% if task.is_done %}task-done{% endif %}
+             {% if not task.is_done and task.deadline and task.deadline < now %}task-overdue{% endif %}"
+             style="background-color: {{ task.category.color if task.category else '#ffffff' }}20">
             <div class="task-content">
                 <h3>{{ task.title }}</h3>
+
+                {% if not task.is_done and task.deadline and task.deadline < now %}
+                    <p style="color: #e74c3c; font-weight: bold;">
+                    </p>
+                {% endif %}
 
                 {% if task.description %}
                 <p>{{ task.description }}</p>

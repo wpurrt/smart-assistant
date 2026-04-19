@@ -1,42 +1,61 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="container mt-4">
-    <h2>Аналитика задач</h2>
-
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card p-3">
-                <h5>Всего задач</h5>
-                <p>{{ stats.total_tasks }}</p>
+<style>
+    .bg-muted-blue {
+        background-color: #2c3e50;
+    }
+    .stat-value-box {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        border-radius: 12px;
+        color: white;
+        flex-shrink: 0;
+    }
+    .stat-item {
+        background-color: #f8f9fa; /* Светло-серый фон */
+        border: 1px solid #e9ecef;
+        border-radius: 16px;
+        transition: all 0.2s ease;
+    }
+    .stat-item:hover {
+        border-color: #2c3e50;
+        background-color: #ffffff;
+    }
+</style>
+<div class="container mt-5" style="max-width: 900px;">
+    <h3 class="mb-4 fw-bold text-secondary text-uppercase tracking-wider">Аналитика задач</h3>
+    <div class="row g-4">
+        {% for label, value in [
+            ('Всего задач', stats.total_tasks),
+            ('Выполнено задач', stats.completed_tasks),
+            ('Активные задачи', stats.pending_tasks),
+            ('Выполнено за неделю', stats.completed_this_week)
+        ] %}
+        <div class="col-md-6">
+            <div class="stat-item p-3 d-flex align-items-center justify-content-between shadow-sm">
+                <span class="fs-5 text-secondary fw-medium">{{ label }}</span>
+                <div class="stat-value-box bg-muted-blue">
+                    {{ value }}
+                </div>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="card p-3">
-                <h5>Выполнено</h5>
-                <p>{{ stats.completed_tasks }}</p>
+        {% endfor %}
+        <div class="col-12 mt-4">
+            <div class="stat-item p-4 d-flex align-items-center justify-content-between shadow-sm border-start border-4 border-dark">
+                <div>
+                    <span class="fs-5 text-secondary fw-medium d-block mb-1">Процент выполнения</span>
+                    <small class="text-muted">Общая эффективность вашей работы</small>
+                </div>
+                <div class="stat-value-box bg-muted-blue" style="width: 100px;">
+                    {{ stats.completion_rate }}%
+                </div>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="card p-3">
-                <h5>Активные</h5>
-                <p>{{ stats.pending_tasks }}</p>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card p-3">
-                <h5>За неделю</h5>
-                <p>{{ stats.completed_this_week }}</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mt-4 p-3">
-        <h5>Процент выполнения</h5>
-        <p>{{ stats.completion_rate }}%</p>
     </div>
 </div>
 {% endblock %}

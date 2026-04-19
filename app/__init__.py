@@ -18,7 +18,7 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    from app.models import User
+    from app.models import User, Task, Category, ActionLog, UserAliceLink
 
 
     @login_manager.user_loader
