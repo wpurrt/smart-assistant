@@ -5,34 +5,10 @@
 {% block content %}
 <section class="todo-page">
     <h2>Мои задачи</h2>
-
-    <form class="auth-form" method="POST">
-        {{ form.hidden_tag() }}
-
-        <label>{{ form.title.label }}</label>
-        {{ form.title(class="form-input") }}
-        {% for error in form.title.errors %}
-        <small class="error-text">{{ error }}</small>
-        {% endfor %}
-
-        <label>{{ form.description.label }}</label>
-        {{ form.description(class="form-input form-textarea") }}
-        {% for error in form.description.errors %}
-        <small class="error-text">{{ error }}</small>
-        {% endfor %}
-
-        <label>{{ form.priority.label }}</label>
-        {{ form.priority(class="form-input") }}
-
-        <label>{{ form.category_id.label }}</label>
-        {{ form.category_id(class="form-input") }}
-
-        <label>{{ form.deadline.label }}</label>
-        {{ form.deadline(class="form-input") }}
-
-        {{ form.submit(class="btn") }}
-    </form>
-
+    <p>Всего задач: {{ tasks|length }}</p>
+    <button class="btn mb-3" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+        Создать задачу
+    </button>
     <div class="tasks-list">
         {% if tasks %}
         {% for task in tasks %}
@@ -42,7 +18,25 @@
              style="background-color: {{ task.category.color if task.category else '#ffffff' }}20">
             <div class="task-content">
                 <h3>{{ task.title }}</h3>
+                {% if task.file_path %}
+                    <div class="mt-2">
+                        {% if task.file_type == "image" %}
+                            <img src="{{ url_for('uploaded_file', filename=task.file_path) }}" width="200">
+                        {% elif task.file_type == "audio" %}
+                            <audio controls>
+                                <source src="{{ url_for('uploaded_file', filename=task.file_path) }}">
+                            </audio>
+                        {% endif %}
+                        <br>
+                        <a href="{{ url_for('uploaded_file', filename=task.file_path) }}" target="_blank" class="btn btn-small">
+                            Открыть файл
+                        </a>
 
+                        <a href="{{ url_for('uploaded_file', filename=task.file_path) }}" download class="btn btn-small btn-secondary">
+                            Скачать
+                        </a>
+                    </div>
+                {% endif %}
                 {% if not task.is_done and task.deadline and task.deadline < now %}
                     <p style="color: #e74c3c; font-weight: bold;">
                     </p>
@@ -91,6 +85,33 @@
         {% else %}
         <p class="empty-text">У вас пока нет задач. Добавьте первую 👀</p>
         {% endif %}
+    </div>
+    <div class="modal fade" id="createTaskModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="modal-header">
+              <h5>Создать задачу</h5>
+            </div>
+
+            <div class="modal-body">
+              {{ form.title(class="form-input") }}
+              {{ form.description(class="form-input") }}
+              {{ form.priority(class="form-input") }}
+              {{ form.category_id(class="form-input") }}
+              {{ form.deadline(class="form-input") }}
+
+              <input type="file" name="file" class="form-control mt-2">
+            </div>
+
+            <div class="modal-footer">
+              {{ form.submit(class="btn") }}
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 </section>
 {% endblock %}

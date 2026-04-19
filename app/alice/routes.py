@@ -9,9 +9,4 @@ alice_bp = Blueprint("alice", __name__)
 def webhook():
     data = request.get_json()
     response_text = handle_alice_command(data)
-    return jsonify({
-        "response": {
-            "text": response_text,
-            "end_session": False
-        }
-    })
+    return jsonify(response_text)

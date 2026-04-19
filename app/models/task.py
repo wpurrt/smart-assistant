@@ -17,8 +17,11 @@ class Task(db.Model):
     priority = db.Column(db.String(20), default="medium", nullable=False)  # low, medium, high
     deadline = db.Column(db.DateTime, nullable=True)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
     completed_at = db.Column(db.DateTime, nullable=True)
+
+    file_path = db.Column(db.String(255))
+    file_type = db.Column(db.String(50))
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=True)

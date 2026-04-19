@@ -33,6 +33,7 @@ def create_app():
     from app.profile import profile_bp
     from app.alice import alice_bp
     from app.analytics import analytics_bp
+    from app.api.routes import api_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -41,5 +42,22 @@ def create_app():
     app.register_blueprint(profile_bp, url_prefix="/profile")
     app.register_blueprint(alice_bp, url_prefix="/alice")
     app.register_blueprint(analytics_bp, url_prefix="/analytics")
+    app.register_blueprint(api_bp, url_prefix="/api")
+
+
+    from flask import send_from_directory
+    from flask_login import current_user, login_required
+    from app.models import Task
+
+
+    @app.route('/uploads/<filename>')
+    @login_required
+    def uploaded_file(filename):
+        #проверяем что файл принадлежит пользователю
+        task = Task.query.filter_by(file_path=filename, user_id=current_user.id).first()
+        if not task:
+            return "Нет доступа", 403
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
     return app

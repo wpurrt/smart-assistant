@@ -13,19 +13,13 @@
 
     <h3>Привязка Яндекс Алисы</h3>
 
-    {% if current_user.alice_link %}
-        <p><strong>Код привязки:</strong> {{ current_user.alice_link.link_code }}</p>
-
-        {% if current_user.alice_link.is_linked %}
-            <p style="color: green;"><strong>Статус:</strong> Аккаунт привязан</p>
-        {% else %}
-            <p style="color: #e67e22;"><strong>Статус:</strong> Ожидает привязки</p>
-        {% endif %}
+    {% if current_user.alice_link_code %}
+        <p><strong>Код привязки:</strong> {{ current_user.alice_link_code }}</p>
     {% else %}
         <p>Код привязки ещё не создан.</p>
     {% endif %}
 
-    <form class="auth-form" method="POST">
+    <form class="auth-form" method="POST" action="{{ url_for('profile.generate_code') }}">
         {{ form.hidden_tag() }}
         {{ form.submit(class="btn") }}
     </form>

@@ -29,8 +29,12 @@
             {% for category in categories %}
                 <div class="task-card">
                     <div class="task-content">
-                        <h3 style="color: {{ category.color }}">{{ category.name }}</h3>
-                        <p>Цвет: <span style="font-weight:bold;">{{ category.color }}</span></p>
+                        <h3>
+                            <a href="{{ url_for('categories.category_tasks', category_id=category.id) }}"
+                               style="color: {{ category.color }}">
+                                {{ category.name }}
+                            </a>
+                        </h3>
                     </div>
 
                     <div class="task-actions">

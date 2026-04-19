@@ -1,62 +1,100 @@
-from app.models import User, Task
+from app.models import User, Task, Category
 from app import db
 from datetime import datetime
+import requests
 
 
 def handle_alice_command(data):
     command = data["request"]["command"].lower()
     yandex_id = data["session"]["user"]["user_id"]
+    state = data.get("state", {}).get("session", {})
 
-    #привязка аккаунта
+    #привязка
     if "привязать аккаунт" in command:
         code = command.split()[-1].upper()
         user = User.query.filter_by(alice_link_code=code).first()
         if not user:
-            return "Неверный код привязки"
+            return simple_response("Неверный код")
         user.yandex_user_id = yandex_id
         user.alice_link_code = None
         db.session.commit()
-        return "Аккаунт успешно привязан"
-
-    #поиск пользователя
+        return simple_response("Аккаунт привязан")
     user = User.query.filter_by(yandex_user_id=yandex_id).first()
     if not user:
-        return "Аккаунт не привязан"
-
-    #показ задач
-    if "покажи задачи" in command:
-        tasks = Task.query.filter_by(user_id=user.id, is_done=False).all()
-        if not tasks:
-            return "У вас нет задач"
-        return "Ваши задачи: " + ", ".join([t.title for t in tasks])
+        return simple_response("Сначала привяжите аккаунт")
 
     #создание задачи
     if "создай задачу" in command:
-        title = command.replace("создай задачу", "").strip()
+        text = command.replace("создай задачу", "").strip()
+        category = None
+        for c in user.categories:
+            if c.name.lower() in text:
+                category = c
         task = Task(
-            title=title,
-            user_id=user.id
+            title=text or "Новая задача",
+            user_id=user.id,
+            category_id=category.id if category else None
         )
         db.session.add(task)
         db.session.commit()
-        return f"Задача {title} создана"
+        return simple_response(f"Создала задачу: {task.title}")
 
-    #завершение задачи
+    #покажи задачи
+    if "покажи задачи" in command:
+        tasks = Task.query.filter_by(user_id=user.id, is_done=False).all()
+        if not tasks:
+            return simple_response("У вас нет задач")
+        text = []
+        for t in tasks:
+            line = t.title
+            if t.deadline:
+                line += f" до {t.deadline.strftime('%d.%m')}"
+            if t.file_path:
+                line += " (есть файл)"
+            text.append(line)
+        return simple_response("Ваши задачи: " + ", ".join(text))
+
+    #завершаем задачу
     if "заверши задачу" in command:
         title = command.replace("заверши задачу", "").strip()
         task = Task.query.filter_by(user_id=user.id, title=title).first()
         if not task:
-            return "Задача не найдена"
+            return simple_response("Не нашла задачу")
         task.is_done = True
         task.completed_at = datetime.utcnow()
         db.session.commit()
-        return f"Задача {title} завершена"
+        return simple_response("Готово")
 
-    #ближайшая задача
-    if "ближайшая задача" in command:
-        task = Task.query.filter_by(user_id=user.id, is_done=False).order_by(Task.deadline.asc()).first()
-        if not task:
-            return "Нет задач"
-        return f"Ближайшая задача: {task.title}"
+    #дедлайн
+    if "дедлайн" in command:
+        return simple_response("Пока установите дедлайн через сайт")
 
-    return "Я не поняла команду"
+    #погода
+    if "погода" in command:
+        r = requests.get(
+            "https://api.open-meteo.com/v1/forecast",
+            params={
+                "latitude": 52.37,
+                "longitude": 4.90,
+                "current_weather": True
+            }
+        )
+        data = r.json()
+        temp = data["current_weather"]["temperature"]
+        return simple_response(f"Сейчас {temp} градусов")
+
+
+def simple_response(text):
+    return {
+        "response": {
+            "text": text,
+            "tts": text,
+            "end_session": False,
+            "buttons":[
+                {
+                    "title":"Открыть сайт",
+                    "url":"https://localhost:5000"
+                }
+            ]
+        }
+    }
