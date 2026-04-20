@@ -95,11 +95,12 @@ def simple_response(text):
             "text": text,
             "tts": text,
             "end_session": False,
-            "buttons":[
+            "buttons": [
                 {
-                    "title":"Открыть сайт",
-                    "url":"https://localhost:5000"
+                    "title": "Открыть сайт",
+                    "url": "https://smart-assistant--wppurt.replit.app"
                 }
             ]
-        }
+        },
+        "version": "1.0"
     }
