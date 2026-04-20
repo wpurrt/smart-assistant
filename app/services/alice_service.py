@@ -10,7 +10,7 @@ def handle_alice_command(data):
     state = data.get("state", {}).get("session", {})
 
     #привязка
-    if "привязать аккаунт" in command:
+    if any(x in command for x in ["привязать аккаунт", "привяжи аккаунт"]):
         code = command.split()[-1].upper()
         user = User.query.filter_by(alice_link_code=code).first()
         if not user:
@@ -24,7 +24,7 @@ def handle_alice_command(data):
         return simple_response("Сначала привяжите аккаунт")
 
     #создание задачи
-    if "создай задачу" in command:
+    if any(x in command for x in ["создай задачу", "добавь задачу", "новая задача"]):
         text = command.replace("создай задачу", "").strip()
         category = None
         for c in user.categories:
@@ -40,7 +40,7 @@ def handle_alice_command(data):
         return simple_response(f"Создала задачу: {task.title}")
 
     #покажи задачи
-    if "покажи задачи" in command:
+    if any(x in command for x in ["покажи задачи", "мои задачи", "список задач"]):
         tasks = Task.query.filter_by(user_id=user.id, is_done=False).all()
         if not tasks:
             return simple_response("У вас нет задач")
@@ -55,7 +55,7 @@ def handle_alice_command(data):
         return simple_response("Ваши задачи: " + ", ".join(text))
 
     #завершаем задачу
-    if "заверши задачу" in command:
+    if any(x in command for x in ["заверши задачу", "закрой задачу", "выполнил задачу", "выполнила задачу"]):
         title = command.replace("заверши задачу", "").strip()
         task = Task.query.filter_by(user_id=user.id, title=title).first()
         if not task:
