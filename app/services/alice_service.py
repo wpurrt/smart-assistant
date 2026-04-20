@@ -5,9 +5,14 @@ import requests
 
 
 def handle_alice_command(data):
-    command = data["request"]["command"].lower()
-    yandex_id = data["session"]["user"]["user_id"]
-    state = data.get("state", {}).get("session", {})
+    request = data.get("request", {})
+    command = request.get("command", "")
+    command = command.lower()
+    yandex_id = (
+        data.get("session", {})
+        .get("user", {})
+        .get("user_id", "")
+    )
 
     #привязка
     if any(x in command for x in ["привязать аккаунт", "привяжи аккаунт"]):
