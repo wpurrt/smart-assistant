@@ -2,7 +2,6 @@ import os
 from flask import Flask
 from app.config import Config
 from app.extensions import db, migrate, login_manager
-from app.alice.routes import alice_bp
 
 
 def create_app():
@@ -31,7 +30,7 @@ def create_app():
     from app.tasks import tasks_bp
     from app.categories import categories_bp
     from app.profile import profile_bp
-    from app.alice import alice_bp
+    from app.alice.routes import alice_bp
     from app.analytics import analytics_bp
     from app.api.routes import api_bp
 
