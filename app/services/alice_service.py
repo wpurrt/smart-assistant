@@ -104,6 +104,8 @@ def handle_alice_command(data):
         data = r.json()
         temp = data["current_weather"]["temperature"]
         return simple_response(f"Сейчас {temp} градусов")
+        
+    return simple_response("Я вас не поняла. Попробуйте еще раз, используя фразы: 'привяжи аккаунт', 'создай задачу', 'покажи задачи', 'заверши задачу'")
 
 
 def simple_response(text):
