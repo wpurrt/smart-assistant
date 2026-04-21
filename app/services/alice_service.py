@@ -2,6 +2,7 @@ from app.models import User, Task, Category
 from app import db
 from datetime import datetime
 import requests
+import re
 
 
 def handle_alice_command(data):
@@ -16,7 +17,9 @@ def handle_alice_command(data):
 
     #привязка
     if any(x in command for x in ["привязать аккаунт", "привяжи аккаунт"]):
-        code = command.split()[-1].upper()
+        match = re.search(r'\d{6,8}', command)
+        if match:
+            code = match.group()
         user = User.query.filter_by(alice_link_code=code).first()
         if not user:
             return simple_response("Неверный код")
@@ -28,9 +31,34 @@ def handle_alice_command(data):
     if not user:
         return simple_response("Сначала привяжите аккаунт")
 
+
+    #завершаем задачу
+    finish_phrases = ["заверши задачу", "закрой задачу", "выполнил задачу", "выполнила задачу"]
+    if any(p in command for p in finish_phrases):
+        title = command
+        for p in finish_phrases:
+            if p in title:
+                title = title.replace(p, "")
+        title = title.strip()
+
+        task = Task.query.filter_by(user_id=user.id, title=title).first()
+        if not task:
+            return simple_response("Не нашла задачу")
+
+        task.is_done = True
+        task.completed_at = datetime.utcnow()
+        db.session.commit()
+
+        return simple_response("Готово")
+
     #создание задачи
-    if any(x in command for x in ["создай задачу", "добавь задачу", "новая задача"]):
-        text = command.replace("создай задачу", "").strip()
+    create_phrases = ["создай задачу", "добавь задачу", "новая задача"]
+    if any(p in command for p in create_phrases):
+        text = command
+        for p in create_phrases:
+            if p in text:
+                text = text.replace(p, "")
+        text = text.strip()
         category = None
         for c in user.categories:
             if c.name.lower() in text:
@@ -58,17 +86,6 @@ def handle_alice_command(data):
                 line += " (есть файл)"
             text.append(line)
         return simple_response("Ваши задачи: " + ", ".join(text))
-
-    #завершаем задачу
-    if any(x in command for x in ["заверши задачу", "закрой задачу", "выполнил задачу", "выполнила задачу"]):
-        title = command.replace("заверши задачу", "").strip()
-        task = Task.query.filter_by(user_id=user.id, title=title).first()
-        if not task:
-            return simple_response("Не нашла задачу")
-        task.is_done = True
-        task.completed_at = datetime.utcnow()
-        db.session.commit()
-        return simple_response("Готово")
 
     #дедлайн
     if "дедлайн" in command:
