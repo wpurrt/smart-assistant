@@ -54,8 +54,12 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_alice_code(self):
-        self.alice_link_code = f"ALICE-{uuid.uuid4().hex[:6].upper()}"
+        def generate_alice_code(self):
+        while True:
+            code = str(random.randint(10000000, 99999999))
+            if not User.query.filter_by(alice_link_code=code).first():
+                self.alice_link_code = code
+                break
 
     def __repr__(self):
         return f"<User {self.username}>"
